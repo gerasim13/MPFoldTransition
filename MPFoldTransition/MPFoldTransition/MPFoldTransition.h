@@ -77,6 +77,9 @@
 //- (UIViewController *)popViewControllerAnimated:(BOOL)animated;
 - (UIViewController *)popViewControllerWithFoldStyle:(MPFoldStyle)style;
 
+//- Pop and then push
+- (void)popPushViewController:(UIViewController *)viewController foldStyle:(MPFoldStyle)style;
+
 //- (NSArray *)popToRootViewControllerAnimated:(BOOL)animated;
 - (NSArray*)popToRootViewControllerWithFoldStyle:(MPFoldStyle)style;
 

@@ -81,6 +81,9 @@
 //- (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated
 - (void)pushViewController:(UIViewController *)viewController flipStyle:(MPFlipStyle)style;
 
+//- Pop and then push
+- (void)popPushViewController:(UIViewController *)viewController flipStyle:(MPFlipStyle)style;
+
 //- (UIViewController *)popViewControllerAnimated:(BOOL)animated;
 - (UIViewController *)popViewControllerWithFlipStyle:(MPFlipStyle)style;
 

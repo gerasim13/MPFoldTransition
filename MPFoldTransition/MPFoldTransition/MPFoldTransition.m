@@ -528,6 +528,16 @@ static inline double mp_radians (double degrees) {return degrees * M_PI/180;}
 	return toController;
 }
 
+- (void)popPushViewController:(UIViewController *)viewController foldStyle:(MPFoldStyle)style
+{
+    MPFoldTransition *foldTransition = [[MPFoldTransition alloc] initWithSourceView:[self visibleViewController].view destinationView:viewController.view duration:[MPFoldTransition defaultDuration] style:style completionAction:MPTransitionActionNone];
+    
+	[foldTransition perform:^(BOOL finished) {
+        [self popViewControllerAnimated:NO];
+        [self pushViewController:viewController animated:NO];
+    }];
+}
+
 - (NSArray*)popToRootViewControllerWithFoldStyle:(MPFoldStyle)style
 {
 	UIViewController* toController = [[self viewControllers] objectAtIndex:0];	//to rootViewController

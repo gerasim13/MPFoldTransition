@@ -796,6 +796,19 @@ static inline double mp_radians (double degrees) {return degrees * M_PI/180;}
 	return toController;
 }
 
+- (void)popPushViewController:(UIViewController *)viewController flipStyle:(MPFlipStyle)style
+{
+	[MPFlipTransition transitionFromViewController:[self visibleViewController]
+								  toViewController:viewController
+										  duration:[MPFlipTransition defaultDuration]
+											 style:style
+										completion:^(BOOL finished) {
+                                            [self popViewControllerAnimated:NO];
+                                            [self pushViewController:viewController animated:NO];
+										}
+	 ];
+}
+
 - (NSArray*)popToRootViewControllerWithFlipStyle:(MPFlipStyle)style
 {
 	UIViewController* toController = [[self viewControllers] objectAtIndex:0];	//to rootViewController
