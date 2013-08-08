@@ -291,9 +291,11 @@ static inline double mp_radians (double degrees) {return degrees * M_PI/180;}
 	[CATransaction begin];
 	[CATransaction setValue:[NSNumber numberWithFloat:self.duration] forKey:kCATransactionAnimationDuration];
 	[CATransaction setValue:[CAMediaTimingFunction functionWithName:[self timingCurveFunctionName]] forKey:kCATransactionAnimationTimingFunction];
-	[CATransaction setCompletionBlock:^{
+
+	__weak typeof(self) weakSelf = self;
+    [CATransaction setCompletionBlock:^{
 		[mainView removeFromSuperview];
-		[self transitionDidComplete];
+		[weakSelf transitionDidComplete];
 		if (completion)
 			completion(YES); // execute the completion block that was passed in
 	}];
@@ -502,12 +504,13 @@ static inline double mp_radians (double degrees) {return degrees * M_PI/180;}
 //- (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated
 - (void)pushViewController:(UIViewController *)viewController foldStyle:(MPFoldStyle)style
 {
+    __weak typeof (self) weakSelf = self;
 	[MPFoldTransition transitionFromViewController:[self visibleViewController] 
 								  toViewController:viewController 
 										  duration:[MPFoldTransition defaultDuration]  
 											 style:style 
 										completion:^(BOOL finished) {
-											[self pushViewController:viewController animated:NO];
+											[weakSelf pushViewController:viewController animated:NO];
 										}
 	 ];
 }
@@ -515,13 +518,14 @@ static inline double mp_radians (double degrees) {return degrees * M_PI/180;}
 - (UIViewController *)popViewControllerWithFoldStyle:(MPFoldStyle)style
 {
 	UIViewController *toController = [[self viewControllers] objectAtIndex:[[self viewControllers] count] - 2];
-
+    
+    __weak typeof (self) weakSelf = self;
 	[MPFoldTransition transitionFromViewController:[self visibleViewController] 
 								  toViewController:toController 
 										  duration:[MPFoldTransition defaultDuration] 
 											 style:style
 										completion:^(BOOL finished) {
-											[self popViewControllerAnimated:NO];
+											[weakSelf popViewControllerAnimated:NO];
 										}
 	 ];
 	
@@ -532,9 +536,10 @@ static inline double mp_radians (double degrees) {return degrees * M_PI/180;}
 {
     MPFoldTransition *foldTransition = [[MPFoldTransition alloc] initWithSourceView:[self visibleViewController].view destinationView:viewController.view duration:[MPFoldTransition defaultDuration] style:style completionAction:MPTransitionActionNone];
     
+    __weak typeof (self) weakSelf = self;
 	[foldTransition perform:^(BOOL finished) {
-        [self popViewControllerAnimated:NO];
-        [self pushViewController:viewController animated:NO];
+        [weakSelf popViewControllerAnimated:NO];
+        [weakSelf pushViewController:viewController animated:NO];
     }];
 }
 
@@ -546,12 +551,13 @@ static inline double mp_radians (double degrees) {return degrees * M_PI/180;}
 	for(int i = 1; i < [[self viewControllers] count]; i++)
 		[popped addObject:[[self viewControllers] objectAtIndex:i]];
 	
+    __weak typeof (self) weakSelf = self;
 	[MPFoldTransition transitionFromViewController:[self visibleViewController]
 								  toViewController:toController
 										  duration:[MPFoldTransition defaultDuration]
 											 style:style
 										completion:^(BOOL finished) {
-											[self popToRootViewControllerAnimated:NO];
+											[weakSelf popToRootViewControllerAnimated:NO];
 										}
 	 ];
 	

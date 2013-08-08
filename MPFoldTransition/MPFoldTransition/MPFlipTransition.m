@@ -452,12 +452,14 @@ static inline double mp_radians (double degrees) {return degrees * M_PI/180;}
 	[CATransaction begin];
 	[CATransaction setValue:[NSNumber numberWithFloat:duration] forKey:kCATransactionAnimationDuration];
 	[CATransaction setValue:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn] forKey:kCATransactionAnimationTimingFunction];
-	[CATransaction setCompletionBlock:^{
+	
+    __weak typeof (self) weakSelf = self;
+    [CATransaction setCompletionBlock:^{
 		// 2nd half of animation, once 1st half completes
-		[self setFlipStage:isFallingBack? 0 : 1];
-		[self switchToStage:isFallingBack? 0 : 1];
+		[weakSelf setFlipStage:isFallingBack? 0 : 1];
+		[weakSelf switchToStage:isFallingBack? 0 : 1];
 		
-		[self animateFlip2:isFallingBack fromProgress:isFallingBack? 1 : 0 withCompletion:completion];
+		[weakSelf animateFlip2:isFallingBack fromProgress:isFallingBack? 1 : 0 withCompletion:completion];
 	}];
 	
 	// First Half of Animation
@@ -536,10 +538,12 @@ static inline double mp_radians (double degrees) {return degrees * M_PI/180;}
 	[CATransaction begin];
 	[CATransaction setValue:[NSNumber numberWithFloat:self.duration/2] forKey:kCATransactionAnimationDuration];
 	[CATransaction setValue:[CAMediaTimingFunction functionWithName:[self timingCurveFunctionNameSecondHalf]] forKey:kCATransactionAnimationTimingFunction];
-	[CATransaction setCompletionBlock:^{
+	
+    __weak typeof (self) weakSelf = self;
+    [CATransaction setCompletionBlock:^{
 		// This is the final completion block, when 2nd half of animation finishes
-		[self cleanupLayers];
-		[self transitionDidComplete];
+		[weakSelf cleanupLayers];
+		[weakSelf transitionDidComplete];
 		
 		if (completion)
 			completion(YES); // execute the completion block that was passed in
@@ -770,12 +774,13 @@ static inline double mp_radians (double degrees) {return degrees * M_PI/180;}
 //- (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated
 - (void)pushViewController:(UIViewController *)viewController flipStyle:(MPFlipStyle)style
 {
+    __weak typeof(self) weakSelf = self;
 	[MPFlipTransition transitionFromViewController:[self visibleViewController] 
 								  toViewController:viewController 
 										  duration:[MPFlipTransition defaultDuration]  
 											 style:style 
 										completion:^(BOOL finished) {
-											[self pushViewController:viewController animated:NO];
+											[weakSelf pushViewController:viewController animated:NO];
 										}
 	 ];
 }
@@ -784,12 +789,13 @@ static inline double mp_radians (double degrees) {return degrees * M_PI/180;}
 {
 	UIViewController *toController = [[self viewControllers] objectAtIndex:[[self viewControllers] count] - 2];
 	
-	[MPFlipTransition transitionFromViewController:[self visibleViewController] 
+	__weak typeof(self) weakSelf = self;
+    [MPFlipTransition transitionFromViewController:[self visibleViewController]
 								  toViewController:toController 
 										  duration:[MPFlipTransition defaultDuration] 
 											 style:style
 										completion:^(BOOL finished) {
-											[self popViewControllerAnimated:NO];
+											[weakSelf popViewControllerAnimated:NO];
 										}
 	 ];
 	
@@ -798,13 +804,14 @@ static inline double mp_radians (double degrees) {return degrees * M_PI/180;}
 
 - (void)popPushViewController:(UIViewController *)viewController flipStyle:(MPFlipStyle)style
 {
+    __weak typeof(self) weakSelf = self;
 	[MPFlipTransition transitionFromViewController:[self visibleViewController]
 								  toViewController:viewController
 										  duration:[MPFlipTransition defaultDuration]
 											 style:style
 										completion:^(BOOL finished) {
-                                            [self popViewControllerAnimated:NO];
-                                            [self pushViewController:viewController animated:NO];
+                                            [weakSelf popViewControllerAnimated:NO];
+                                            [weakSelf pushViewController:viewController animated:NO];
 										}
 	 ];
 }
@@ -817,12 +824,13 @@ static inline double mp_radians (double degrees) {return degrees * M_PI/180;}
 	for(int i = 1; i < [[self viewControllers] count]; i++)
 		[popped addObject:[[self viewControllers] objectAtIndex:i]];
 	
+    __weak typeof(self) weakSelf = self;
 	[MPFlipTransition transitionFromViewController:[self visibleViewController]
 								  toViewController:toController
 										  duration:[MPFlipTransition defaultDuration]
 											 style:style
 										completion:^(BOOL finished) {
-											[self popToRootViewControllerAnimated:NO];
+											[weakSelf popToRootViewControllerAnimated:NO];
 										}
 	 ];
 	
