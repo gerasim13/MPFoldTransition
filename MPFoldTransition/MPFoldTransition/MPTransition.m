@@ -110,22 +110,7 @@
 	}
 
 	[self setSourceView:src.view];
-	if ([src wantsFullScreenLayout] && NSFoundationVersionNumber <= NSFoundationVersionNumber_iOS_6_1)
-	{
-		// don't include the status bar height in the rect to fold
-		CGRect frame = src.view.frame;
-		CGRect frameViewRect = [src.view convertRect:frame fromView:nil];
-		CGRect statusBarFrame = [[UIApplication sharedApplication] statusBarFrame];
-		CGRect statusBarWindowRect = [src.view.window convertRect:statusBarFrame fromWindow: nil];
-		CGRect statusBarViewRect = [src.view convertRect:statusBarWindowRect fromView: nil];			
-		frameViewRect.origin.y += statusBarViewRect.size.height;
-		frameViewRect.size.height -= statusBarViewRect.size.height;
-		[self setRect:frameViewRect];
-	}
-    else
-    {
-        [self setRect:src.view.bounds];
-    }
+	[self setRect:src.view.bounds];
 }
 
 - (void)setPresentedController:(UIViewController *)presentedController;
@@ -166,8 +151,8 @@
 + (BOOL)subView:(UIView *)subView1 isAboveSubView:(UIView *)subView2
 {
 	UIView *superview = [subView1 superview];
-	int index1 = [[superview subviews] indexOfObject:subView1];
-	int index2 = [[superview subviews] indexOfObject:subView2];
+	NSUInteger index1 = [[superview subviews] indexOfObject:subView1];
+	NSUInteger index2 = [[superview subviews] indexOfObject:subView2];
 	if (index2 == NSNotFound)
 		[NSException raise:@"Invalid Operation" format:@"Both views must have the same superview"];
 	return index1 > index2;
