@@ -29,7 +29,10 @@
 	CGContextTranslateCTM(context, -frame.origin.x, -frame.origin.y);
     
     // Render the view as image
+    BOOL hidden = view.hidden;
+    view.hidden = NO;
     [view.layer renderInContext:context];
+    view.hidden = hidden;
     
     // Fetch the image   
     UIImage *renderedImage = UIGraphicsGetImageFromCurrentImageContext();
@@ -53,10 +56,13 @@
 	// Clip the context to the portion of the view we will draw
 	CGContextClipToRect(context, (CGRect){{insets.left, insets.top}, frame.size});
 	// Translate it, to the desired position
-     CGContextTranslateCTM(context, -frame.origin.x + insets.left, -frame.origin.y + insets.top);
+    CGContextTranslateCTM(context, -frame.origin.x + insets.left, -frame.origin.y + insets.top);
     
     // Render the view as image
+    BOOL hidden = view.hidden;
+    view.hidden = NO;
     [view.layer renderInContext:context];
+    view.hidden = hidden;
     
     // Fetch the image   
     UIImage *renderedImage = UIGraphicsGetImageFromCurrentImageContext();
